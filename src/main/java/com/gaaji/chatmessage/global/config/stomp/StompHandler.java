@@ -1,6 +1,7 @@
 package com.gaaji.chatmessage.global.config.stomp;
 
 import com.gaaji.chatmessage.global.config.jwt.JwtProvider;
+import com.gaaji.chatmessage.global.exception.TokenRejectException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -27,7 +28,7 @@ public class StompHandler implements ChannelInterceptor {
                 token = authorization.replace("Bearer","");
             }
             if(token == null || jwtProvider.validateToken(token) == null) {
-                throw new RuntimeException(); // TODO 예외 클래스 정의
+                throw new TokenRejectException("Websocket 토큰이 유효하지 않습니다.");
             }
         }
 
