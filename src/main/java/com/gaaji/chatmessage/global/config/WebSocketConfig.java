@@ -1,6 +1,6 @@
-package com.gaaji.chatmessage.config;
+package com.gaaji.chatmessage.global.config;
 
-import com.gaaji.chatmessage.config.stomp.StompHandler;
+import com.gaaji.chatmessage.global.config.stomp.StompHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;

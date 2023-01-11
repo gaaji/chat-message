@@ -1,6 +1,6 @@
-package com.gaaji.chatmessage.config.stomp;
+package com.gaaji.chatmessage.global.config.stomp;
 
-import com.gaaji.chatmessage.config.jwt.JwtProvider;
+import com.gaaji.chatmessage.global.config.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;

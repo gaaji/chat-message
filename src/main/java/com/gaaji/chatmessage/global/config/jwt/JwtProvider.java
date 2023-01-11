@@ -1,4 +1,4 @@
-package com.gaaji.chatmessage.config.jwt;
+package com.gaaji.chatmessage.global.config.jwt;
 
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
