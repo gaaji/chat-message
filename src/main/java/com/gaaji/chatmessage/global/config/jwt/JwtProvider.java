@@ -2,6 +2,7 @@ package com.gaaji.chatmessage.global.config.jwt;
 
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -11,6 +12,7 @@ import javax.annotation.PostConstruct;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 @PropertySource("classpath:security.properties")
@@ -36,6 +38,7 @@ public class JwtProvider {
     }
 
     public String createToken() {
+        log.info("[JwtProvider JWT Socket Token] - create token");
         return createToken(accessTokenExpirationTime);
     }
 

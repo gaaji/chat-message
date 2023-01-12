@@ -22,7 +22,7 @@ public class StompHandler implements ChannelInterceptor {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
 
         if(accessor.getCommand() == StompCommand.CONNECT || accessor.getCommand() == StompCommand.SEND) {
-            String authorization = accessor.getFirstNativeHeader("Authorization");
+            String authorization = accessor.getFirstNativeHeader("Websocket-Token");
             String token = null;
             if (StringUtils.hasText(authorization) && authorization.contains("Bearer")) {
                 token = authorization.replace("Bearer","");
