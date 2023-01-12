@@ -16,11 +16,18 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     private final StompHandler stompHandler;
 
+    /** Websocket heartbeat time */
+    private static final long HEARTBEAT_TIME = 10 * 1000L;
+    /** Websocket disconnect delay time */
+    private static final long DISCONNECT_DELAY_TIME = 60 * 1000L;
+
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws-gaaji-chat")
                 .setAllowedOrigins("*")
-                .withSockJS();
+                .withSockJS()
+                .setHeartbeatTime(HEARTBEAT_TIME)
+                .setDisconnectDelay(DISCONNECT_DELAY_TIME);
     }
 
     @Override
