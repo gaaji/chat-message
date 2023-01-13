@@ -17,16 +17,12 @@ public class TokenController {
 
     private final TokenService tokenService;
 
-    private static final String BEARER = "BEARER";
-
     @GetMapping("/token")
     @ResponseStatus(HttpStatus.CREATED)
     public void createToken(HttpServletResponse response) {
-        String token = BEARER + " ";
+        String token = tokenService.createToken();
 
-        token += tokenService.createToken();
-
-        response.addHeader("Websocket-Token", token);
+        response.addHeader("WebSocketToken", token);
     }
 
 }
