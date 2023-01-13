@@ -1,8 +1,8 @@
 package com.gaaji.chatmessage.domain.entity;
 
-public class Message {
+public class Chat {
     private String id;
-    private String content;
+    private String roomId;
     private String senderId;
-
+    private String content;
 }
