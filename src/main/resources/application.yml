@@ -1,8 +1,10 @@
 spring:
   data:
     mongodb:
-      host: localhost
-      port: 27017
-      username: sa
-      password:
+      uri: mongodb://127.0.0.1:27017/gaaji-chat
+      authentication-database: admin
       database: gaaji-chat
+      username: root
+      password: 1234
+      test:
+        connectionString: mongodb://127.0.0.1:27017/gaaji-chat
