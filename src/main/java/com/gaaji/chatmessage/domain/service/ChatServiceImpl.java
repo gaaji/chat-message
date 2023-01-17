@@ -3,6 +3,7 @@ package com.gaaji.chatmessage.domain.service;
 import com.gaaji.chatmessage.domain.controller.dto.ChatRequest;
 import com.gaaji.chatmessage.domain.entity.Chat;
 import com.gaaji.chatmessage.domain.repository.ChatRepository;
+import com.gaaji.chatmessage.global.constants.StringConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
@@ -11,7 +12,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ChatServiceImpl implements ChatService{
 
-    private static final String SUB_URL = "/sub/chat/room/";
     private final SimpMessageSendingOperations template;
     private final ChatRepository chatRepository;
 
@@ -30,6 +30,6 @@ public class ChatServiceImpl implements ChatService{
     }
 
     private void broadcasting(ChatRequest chat) {
-        template.convertAndSend(SUB_URL + chat.getRoomId(), chat);
+        template.convertAndSend(StringConstants.STOMP_SUB_URL + chat.getRoomId(), chat);
     }
 }

@@ -1,5 +1,6 @@
 package com.gaaji.chatmessage.global.jwt;
 
+import com.gaaji.chatmessage.global.constants.StringConstants;
 import com.gaaji.chatmessage.global.exception.ErrorCodeConstants;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -27,8 +28,6 @@ public class JwtProvider {
     private String secretKey;
     private static final long EXPIRATION_SECOND = 300; // 5 min.
 
-    private static final String BEARER_PREFIX = "Bearer ";
-
     @PostConstruct
     protected void init() {
         secretKey = Base64.encodeBase64String(secretKey.getBytes(StandardCharsets.UTF_8));
@@ -47,7 +46,7 @@ public class JwtProvider {
 
     public String createToken() {
         log.info("[JwtProvider] - Token Creating ...");
-        return BEARER_PREFIX + createToken(EXPIRATION_SECOND);
+        return StringConstants.BEARER_PREFIX + createToken(EXPIRATION_SECOND);
     }
 
     public void validateToken(String token) {
@@ -55,11 +54,11 @@ public class JwtProvider {
             throw new MessageDeliveryException(ErrorCodeConstants.JWT_NULL);
         }
 
-        if (!token.contains(BEARER_PREFIX)) {
+        if (!token.contains(StringConstants.BEARER_PREFIX)) {
             throw new MessageDeliveryException(ErrorCodeConstants.JWT_INVALIDATED_PREFIX);
         }
 
-        token = token.substring(BEARER_PREFIX.length());
+        token = token.substring(StringConstants.BEARER_PREFIX.length());
 
         Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
         if (claims.getBody() == null) {

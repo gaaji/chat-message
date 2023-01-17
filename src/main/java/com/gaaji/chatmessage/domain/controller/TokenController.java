@@ -1,6 +1,7 @@
 package com.gaaji.chatmessage.domain.controller;
 
 import com.gaaji.chatmessage.domain.service.TokenService;
+import com.gaaji.chatmessage.global.constants.StringConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,7 +23,7 @@ public class TokenController {
     public void createToken(HttpServletResponse response) {
         String token = tokenService.createToken();
 
-        response.addHeader("WebSocketToken", token);
+        response.addHeader(StringConstants.TOKEN_HEADER_KEY, token);
     }
 
 }

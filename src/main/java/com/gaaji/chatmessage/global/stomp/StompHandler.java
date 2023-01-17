@@ -1,5 +1,6 @@
 package com.gaaji.chatmessage.global.stomp;
 
+import com.gaaji.chatmessage.global.constants.StringConstants;
 import com.gaaji.chatmessage.global.exception.ErrorCodeConstants;
 import com.gaaji.chatmessage.global.jwt.JwtProvider;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -19,7 +20,6 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class StompHandler implements ChannelInterceptor {
 
-    private static final String BEARER_PREFIX = "Bearer ";
     private final JwtProvider jwtProvider;
 
     @Override
@@ -33,7 +33,7 @@ public class StompHandler implements ChannelInterceptor {
 
             log.info("[StompHandler] - Token Validating ...");
 
-            String authorization = accessor.getFirstNativeHeader("WebSocketToken");
+            String authorization = accessor.getFirstNativeHeader(StringConstants.TOKEN_HEADER_KEY);
             try {
                 jwtProvider.validateToken(authorization);
 
