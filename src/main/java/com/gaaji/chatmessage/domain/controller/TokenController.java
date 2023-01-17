@@ -1,6 +1,7 @@
 package com.gaaji.chatmessage.domain.controller;
 
 import com.gaaji.chatmessage.domain.service.TokenService;
+import com.gaaji.chatmessage.global.constants.ApiConstants;
 import com.gaaji.chatmessage.global.constants.StringConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -13,12 +14,12 @@ import javax.servlet.http.HttpServletResponse;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/chats")
+@RequestMapping(ApiConstants.ENDPOINT_CHAT)
 public class TokenController {
 
     private final TokenService tokenService;
 
-    @GetMapping("/token")
+    @GetMapping(ApiConstants.ENDPOINT_CREATE_TOKEN)
     @ResponseStatus(HttpStatus.CREATED)
     public void createToken(HttpServletResponse response) {
         String token = tokenService.createToken();

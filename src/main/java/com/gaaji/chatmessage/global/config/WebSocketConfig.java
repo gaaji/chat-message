@@ -1,5 +1,6 @@
 package com.gaaji.chatmessage.global.config;
 
+import com.gaaji.chatmessage.global.constants.ApiConstants;
 import com.gaaji.chatmessage.global.stomp.StompErrorHandler;
 import com.gaaji.chatmessage.global.stomp.StompHandler;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws/gaaji-chat")
+        registry.addEndpoint(ApiConstants.WEBSOCKET_ENDPOINT)
                 .setAllowedOriginPatterns("*");
         // Heartbeat 고려
         // withSockJS()는 JS 라이브러리인 SockJS를 사용한다는 함수로,
@@ -31,9 +32,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.enableSimpleBroker("/sub");
+        registry.enableSimpleBroker(ApiConstants.WEBSOCKET_SUBSCRIBE_ENDPOINT);
 
-        registry.setApplicationDestinationPrefixes("/pub");
+        registry.setApplicationDestinationPrefixes(ApiConstants.WEBSOCKET_PUBLISH_ENDPOINT);
     }
 
     @Override
