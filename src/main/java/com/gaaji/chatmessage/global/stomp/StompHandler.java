@@ -20,7 +20,6 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class StompHandler implements ChannelInterceptor {
 
-    private static final String BEARER_PREFIX = "Bearer ";
     private final JwtProvider jwtProvider;
     private final KafkaService kafkaService;
 
