@@ -24,7 +24,7 @@ public class TokenController {
     public void createToken(HttpServletResponse response) {
         String token = tokenService.createToken();
 
-        response.addHeader(StringConstants.TOKEN_HEADER_KEY, token);
+        response.addHeader(StringConstants.SOCKET_TOKEN_HEADER_KEY, token);
     }
 
 }
