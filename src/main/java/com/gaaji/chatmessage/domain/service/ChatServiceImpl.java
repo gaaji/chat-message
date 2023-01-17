@@ -14,6 +14,7 @@ public class ChatServiceImpl implements ChatService{
     private static final String SUB_URL = "/sub/chat/room/";
     private final SimpMessageSendingOperations template;
     private final ChatRepository chatRepository;
+    private final KafkaService kafkaService;
 
     @Override
     public void chat(ChatRequest chatRequest) {
@@ -25,7 +26,8 @@ public class ChatServiceImpl implements ChatService{
         // 2. 구독자에게 브로드캐스트
         broadcasting(chatRequest);
 
-        // 3. API 서버 전달
+        // 3. API 서버 메시지 전달
+        kafkaService.chat(chatRequest);
 
     }
 
