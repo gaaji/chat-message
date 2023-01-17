@@ -1,6 +1,5 @@
 package com.gaaji.chatmessage.global.stomp;
 
-import com.gaaji.chatmessage.global.constants.StringConstants;
 import com.gaaji.chatmessage.global.exception.ErrorCodeConstants;
 import com.gaaji.chatmessage.global.jwt.JwtProvider;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -21,6 +20,7 @@ import org.springframework.stereotype.Component;
 public class StompHandler implements ChannelInterceptor {
 
     private final JwtProvider jwtProvider;
+    private final KafkaService kafkaService;
 
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
@@ -29,23 +29,37 @@ public class StompHandler implements ChannelInterceptor {
 
         StompCommand command = accessor.getCommand();
         if(command == StompCommand.CONNECT) {
-            log.info("[StompHandler] - WebSocket Connecting ...");
-
-            log.info("[StompHandler] - Token Validating ...");
-
-            String authorization = accessor.getFirstNativeHeader(StringConstants.TOKEN_HEADER_KEY);
-            try {
-                jwtProvider.validateToken(authorization);
-
-            } catch (MalformedJwtException e ) {
-                throw new MessageDeliveryException(ErrorCodeConstants.JWT_MALFORMED);
-
-            } catch (ExpiredJwtException e) {
-                throw new MessageDeliveryException(ErrorCodeConstants.JWT_EXPIRED);
-            }
-
-            log.info("[StompHandler] - WebSocket Connect");
+            connecting(accessor);
+        } else if(command == StompCommand.DISCONNECT) {
+            log.info("Disconnect");
+            disconnecting();
         }
         return message;
     }
+
+    private void connecting(StompHeaderAccessor accessor) {
+        log.info("[StompHandler] - WebSocket Connecting ...");
+        log.info("[StompHandler] - Token Validating ...");
+
+        String authorization = accessor.getFirstNativeHeader("WebSocketToken");
+        try {
+            jwtProvider.validateToken(authorization);
+
+        } catch (MalformedJwtException e ) {
+            throw new MessageDeliveryException(ErrorCodeConstants.JWT_MALFORMED);
+
+        } catch (ExpiredJwtException e) {
+            throw new MessageDeliveryException(ErrorCodeConstants.JWT_EXPIRED);
+        }
+        log.info("[StompHandler] - WebSocket Connect");
+
+        String userId = "qwer";
+        kafkaService.notifyOnline(userId);
+    }
+
+    private void disconnecting() {
+        String userId = "qwer";
+        kafkaService.notifyOffline(userId);
+    }
+
 }
