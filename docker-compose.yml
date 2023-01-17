@@ -15,4 +15,4 @@ services:
       - "27017:27017"
     volumes:
       # -v 옵션 (다렉토리 마운트 설정)
-      - ~/data:/data/db
+      - ~/data/mongo/gaaji-market:/data/db
