@@ -1,5 +1,6 @@
 package com.gaaji.chatmessage.global.stomp;
 
+import com.gaaji.chatmessage.domain.service.KafkaService;
 import com.gaaji.chatmessage.global.exception.ErrorCodeConstants;
 import com.gaaji.chatmessage.global.jwt.JwtProvider;
 import io.jsonwebtoken.ExpiredJwtException;
