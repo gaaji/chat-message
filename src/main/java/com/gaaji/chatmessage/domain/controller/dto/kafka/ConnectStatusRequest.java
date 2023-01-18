@@ -6,6 +6,8 @@ import lombok.Data;
 @Data
 @Builder
 public class ConnectStatusRequest {
+    private static final String ONLINE = "ONLINE";
+    private static final String OFFLINE = "OFFLINE";
     private String userId;
     private String status;
 
@@ -19,10 +21,10 @@ public class ConnectStatusRequest {
     }
 
     public static ConnectStatusRequest ofOnline(String userId) {
-        return of(userId).setStatus("ONLINE");
+        return of(userId).setStatus(ONLINE);
     }
 
     public static ConnectStatusRequest ofOffLine(String userId) {
-        return of(userId).setStatus("OFFLINE");
+        return of(userId).setStatus(OFFLINE);
     }
 }
