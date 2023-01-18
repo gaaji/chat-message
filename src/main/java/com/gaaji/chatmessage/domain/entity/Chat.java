@@ -19,7 +19,7 @@ public class Chat {
     private String content;
     private Date createdAt;
 
-    public static Chat of(ChatRequest chatDto) {
+    public static Chat from(ChatRequest chatDto) {
         return Chat.builder()
                 .id(ObjectId.get())
                 .roomId(chatDto.getRoomId())

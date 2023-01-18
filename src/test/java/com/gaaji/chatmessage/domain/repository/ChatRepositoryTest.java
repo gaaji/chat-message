@@ -21,7 +21,7 @@ class ChatRepositoryTest {
 
     private Chat createChat() {
         ChatRequest request = ChatRequest.builder().roomId(roomId).senderId(UUID.randomUUID().toString()).content("hello! new chat!!").build();
-        return Chat.of(request);
+        return Chat.from(request);
     }
 
     @Test

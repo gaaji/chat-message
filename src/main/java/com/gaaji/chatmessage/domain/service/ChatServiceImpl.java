@@ -18,7 +18,7 @@ public class ChatServiceImpl implements ChatService{
 
     @Override
     public void chat(ChatRequest chatRequest) {
-        Chat chat = Chat.of(chatRequest);
+        Chat chat = Chat.from(chatRequest);
 
         // 1. DB 저장
         chatRepository.save(chat);
