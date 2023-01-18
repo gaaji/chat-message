@@ -58,6 +58,8 @@ public class JwtProvider {
 
             validateTokenInvalidated(claims);
 
+            log.info("[JwtProvider] - Token Validated.");
+
         } catch (MalformedJwtException e ) {
             throw new MessageDeliveryException(ErrorCodeConstants.JWT_MALFORMED);
 
