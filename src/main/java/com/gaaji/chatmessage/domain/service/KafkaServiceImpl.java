@@ -18,13 +18,13 @@ public class KafkaServiceImpl implements KafkaService {
 
     @Override
     public void notifyOnline(String userId) {
-        ConnectStatusRequest online = ConnectStatusRequest.ofOnline(userId);
+        ConnectStatusRequest online = ConnectStatusRequest.newOnline(userId);
         notifyStatus(online);
     }
 
     @Override
     public void notifyOffline(String userId) {
-        ConnectStatusRequest offline = ConnectStatusRequest.ofOffLine(userId);
+        ConnectStatusRequest offline = ConnectStatusRequest.newOffline(userId);
         notifyStatus(offline);
     }
 
