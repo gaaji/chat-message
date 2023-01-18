@@ -1,4 +1,4 @@
-package com.gaaji.chatmessage.domain.controller.dto.kafka;
+package com.gaaji.chatmessage.domain.controller.dto;
 
 import lombok.Builder;
 import lombok.Data;

@@ -1,6 +1,6 @@
 package com.gaaji.chatmessage.global.exception;
 
-public class ErrorCodeConstants {
+public class ExceptionHandlerConstants {
     public static final String JWT_NULL = "JWT_NULL";
     public static final String JWT_INVALIDATED = "JWT_INVALIDATED";
     public static final String JWT_MALFORMED = "JWT_MALFORMED";

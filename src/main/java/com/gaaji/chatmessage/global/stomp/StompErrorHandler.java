@@ -1,7 +1,7 @@
 package com.gaaji.chatmessage.global.stomp;
 
 import com.gaaji.chatmessage.global.exception.ErrorCode;
-import com.gaaji.chatmessage.global.exception.ErrorCodeConstants;
+import com.gaaji.chatmessage.global.exception.ExceptionHandlerConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageDeliveryException;
@@ -31,19 +31,19 @@ public class StompErrorHandler extends StompSubProtocolErrorHandler {
         if (ex instanceof MessageDeliveryException) {
 
             switch (Objects.requireNonNull(ex.getMessage())) {
-                case ErrorCodeConstants.JWT_NULL:
+                case ExceptionHandlerConstants.JWT_NULL:
                     return handleTokenException(ErrorCode.TOKEN_NULL_ERROR);
 
-                case ErrorCodeConstants.JWT_INVALIDATED:
+                case ExceptionHandlerConstants.JWT_INVALIDATED:
                     return handleTokenException(ErrorCode.INVALIDATED_TOKEN_ERROR);
 
-                case ErrorCodeConstants.JWT_EXPIRED:
+                case ExceptionHandlerConstants.JWT_EXPIRED:
                     return handleTokenException(ErrorCode.TOKEN_EXPIRATION_ERROR);
 
-                case ErrorCodeConstants.JWT_MALFORMED:
+                case ExceptionHandlerConstants.JWT_MALFORMED:
                     return handleTokenException(ErrorCode.MALFORMED_TOKEN_ERROR);
 
-                case ErrorCodeConstants.JWT_INVALIDATED_PREFIX:
+                case ExceptionHandlerConstants.JWT_INVALIDATED_PREFIX:
                     return handleTokenException(ErrorCode.INVALIDATED_TOKEN_PREFIX_ERROR);
             }
         }
@@ -59,16 +59,12 @@ public class StompErrorHandler extends StompSubProtocolErrorHandler {
         log.error("[StompErrorHandler] - Error code= {}, message= {}", errorCode.getCode(), errorCode.getMessage());
         StompHeaderAccessor accessor = StompHeaderAccessor.create(StompCommand.ERROR);
 
-        String code = String.valueOf(errorCode.getMessage());
+        String code = errorCode.getMessage();
 
-        accessor.setMessage(String.valueOf(errorCode.getCode()));
+        accessor.setMessage(errorCode.getCode());
         accessor.setLeaveMutable(true);
 
         return MessageBuilder.createMessage(code.getBytes(StandardCharsets.UTF_8), accessor.getMessageHeaders());
     }
-
-
-
-
 
 }
