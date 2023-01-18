@@ -28,6 +28,11 @@ public class KafkaServiceImpl implements KafkaService {
         notifyStatus(offline);
     }
 
+    private void notifyStatus(ConnectStatusRequest status) {
+        String message = convertValueAsString(status);
+        sendMessage("status", message);
+    }
+
     @Override
     public void chat(ChatRequest chat) {
         String message = convertValueAsString(chat);
@@ -37,11 +42,6 @@ public class KafkaServiceImpl implements KafkaService {
     private void sendMessage(String topic, String message) {
         log.info("Send kafka Message: topic - {}, message - {}", topic, message);
         this.kafkaTemplate.send(topic, message);
-    }
-
-    private void notifyStatus(ConnectStatusRequest status) {
-        String message = convertValueAsString(status);
-        sendMessage("status", message);
     }
 
     private String convertValueAsString(Object value) {
