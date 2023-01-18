@@ -6,23 +6,25 @@ import lombok.Data;
 @Data
 @Builder
 public class ConnectStatusRequest {
+    private static final String ONLINE = "ONLINE";
+    private static final String OFFLINE = "OFFLINE";
     private String userId;
     private String status;
 
-    public ConnectStatusRequest setStatus(String status) {
+    private ConnectStatusRequest setStatus(String status) {
         this.status = status;
         return this;
     }
 
-    private static ConnectStatusRequest of(String userId) {
+    private static ConnectStatusRequest from(String userId) {
         return ConnectStatusRequest.builder().userId(userId).build();
     }
 
-    public static ConnectStatusRequest ofOnline(String userId) {
-        return of(userId).setStatus("ONLINE");
+    public static ConnectStatusRequest newOnline(String userId) {
+        return ConnectStatusRequest.from(userId).setStatus(ONLINE);
     }
 
-    public static ConnectStatusRequest ofOffLine(String userId) {
-        return of(userId).setStatus("OFFLINE");
+    public static ConnectStatusRequest newOffline(String userId) {
+        return ConnectStatusRequest.from(userId).setStatus(OFFLINE);
     }
 }

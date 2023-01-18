@@ -7,10 +7,10 @@ import com.gaaji.chatmessage.domain.controller.dto.kafka.ConnectStatusRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 @Slf4j
-@Service
+@Component
 @RequiredArgsConstructor
 public class KafkaServiceImpl implements KafkaService {
 
@@ -18,14 +18,19 @@ public class KafkaServiceImpl implements KafkaService {
 
     @Override
     public void notifyOnline(String userId) {
-        ConnectStatusRequest online = ConnectStatusRequest.ofOnline(userId);
+        ConnectStatusRequest online = ConnectStatusRequest.newOnline(userId);
         notifyStatus(online);
     }
 
     @Override
     public void notifyOffline(String userId) {
-        ConnectStatusRequest offline = ConnectStatusRequest.ofOffLine(userId);
+        ConnectStatusRequest offline = ConnectStatusRequest.newOffline(userId);
         notifyStatus(offline);
+    }
+
+    private void notifyStatus(ConnectStatusRequest status) {
+        String message = convertValueAsString(status);
+        sendMessage("status", message);
     }
 
     @Override
@@ -37,11 +42,6 @@ public class KafkaServiceImpl implements KafkaService {
     private void sendMessage(String topic, String message) {
         log.info("Send kafka Message: topic - {}, message - {}", topic, message);
         this.kafkaTemplate.send(topic, message);
-    }
-
-    private void notifyStatus(ConnectStatusRequest status) {
-        String message = convertValueAsString(status);
-        sendMessage("status", message);
     }
 
     private String convertValueAsString(Object value) {

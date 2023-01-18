@@ -1,19 +1,18 @@
 package com.gaaji.chatmessage.global.stomp;
 
-import com.gaaji.chatmessage.domain.service.KafkaService;
-import com.gaaji.chatmessage.global.exception.ErrorCodeConstants;
+import com.gaaji.chatmessage.domain.service.WebSocketConnectService;
+import com.gaaji.chatmessage.global.constants.StringConstants;
 import com.gaaji.chatmessage.global.jwt.JwtProvider;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.MalformedJwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.event.EventListener;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
-import org.springframework.messaging.MessageDeliveryException;
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.stereotype.Component;
+import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 @Slf4j
 @Component
@@ -21,46 +20,50 @@ import org.springframework.stereotype.Component;
 public class StompHandler implements ChannelInterceptor {
 
     private final JwtProvider jwtProvider;
-    private final KafkaService kafkaService;
+    private final WebSocketConnectService webSocketConnectService;
 
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
-
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
 
         StompCommand command = accessor.getCommand();
+
         if(command == StompCommand.CONNECT) {
             connecting(accessor);
-        } else if(command == StompCommand.DISCONNECT) {
-            log.info("Disconnect");
-            disconnecting();
         }
+
         return message;
+    }
+
+    @EventListener
+    public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
+        String sessionId = event.getSessionId();
+
+        disconnecting(sessionId);
     }
 
     private void connecting(StompHeaderAccessor accessor) {
         log.info("[StompHandler] - WebSocket Connecting ...");
-        log.info("[StompHandler] - Token Validating ...");
 
-        String authorization = accessor.getFirstNativeHeader("WebSocketToken");
-        try {
-            jwtProvider.validateToken(authorization);
+        // Validate token
+        String authorization = accessor.getFirstNativeHeader(StringConstants.HEADER_SOCKET_TOKEN);
+        jwtProvider.validateToken(authorization);
 
-        } catch (MalformedJwtException e ) {
-            throw new MessageDeliveryException(ErrorCodeConstants.JWT_MALFORMED);
+        // Handling connect event
+        String sessionId = accessor.getSessionId();
+        String userId = accessor.getFirstNativeHeader(StringConstants.HEADER_AUTH_ID);
+        webSocketConnectService.connect(sessionId, userId);
 
-        } catch (ExpiredJwtException e) {
-            throw new MessageDeliveryException(ErrorCodeConstants.JWT_EXPIRED);
-        }
-        log.info("[StompHandler] - WebSocket Connect");
-
-        String userId = "qwer";
-        kafkaService.notifyOnline(userId);
+        log.info("[StompHandler] - WebSocket Connect.");
     }
 
-    private void disconnecting() {
-        String userId = "qwer";
-        kafkaService.notifyOffline(userId);
+    private void disconnecting(String sessionId) {
+        log.info("[StompHandler] - WebSocket Disconnecting ...");
+
+        // Handling disconnect event
+        webSocketConnectService.disconnect(sessionId);
+
+        log.info("[StompHandler] - WebSocket Disconnect.");
     }
 
 }

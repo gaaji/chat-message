@@ -2,10 +2,7 @@ package com.gaaji.chatmessage.global.jwt;
 
 import com.gaaji.chatmessage.global.constants.StringConstants;
 import com.gaaji.chatmessage.global.exception.ErrorCodeConstants;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -49,20 +46,46 @@ public class JwtProvider {
         return StringConstants.BEARER_PREFIX + createToken(EXPIRATION_SECOND);
     }
 
-    public void validateToken(String token) {
+    public void validateToken(String inputToken) {
+        log.info("[JwtProvider] - Token Validating ...");
+
+        String token;
+        token = validateTokenIsNonNull(inputToken);
+        token = validateTokenHasPrefix(token);
+
+        try {
+            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+
+            validateTokenInvalidated(claims);
+
+            log.info("[JwtProvider] - Token Validated.");
+
+        } catch (MalformedJwtException e ) {
+            throw new MessageDeliveryException(ErrorCodeConstants.JWT_MALFORMED);
+
+        } catch (ExpiredJwtException e) {
+            throw new MessageDeliveryException(ErrorCodeConstants.JWT_EXPIRED);
+        }
+    }
+
+    private String validateTokenIsNonNull(String token) {
         if(!StringUtils.hasText(token)) {
             throw new MessageDeliveryException(ErrorCodeConstants.JWT_NULL);
         }
+        return token;
+    }
 
+    private String validateTokenHasPrefix(String token) {
         if (!token.contains(StringConstants.BEARER_PREFIX)) {
             throw new MessageDeliveryException(ErrorCodeConstants.JWT_INVALIDATED_PREFIX);
         }
+        return token.substring(StringConstants.BEARER_PREFIX.length());
+    }
 
-        token = token.substring(StringConstants.BEARER_PREFIX.length());
-
-        Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+    private void validateTokenInvalidated(Jws<Claims> claims) {
         if (claims.getBody() == null) {
             throw new MessageDeliveryException(ErrorCodeConstants.JWT_INVALIDATED);
         }
     }
+
 }
