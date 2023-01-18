@@ -1,0 +1,33 @@
+# 파일 규격 버전
+version: "3"
+# 이 항목 밑에 실행하려는 컨테이너 들을 정의
+services:
+  # 서비스 명
+  mongodb:
+    # 사용할 이미지
+    image: mongo
+    # 컨테이너 실행 시 재시작
+    restart: always
+    # 컨테이너 이름 설정
+    container_name: mongo-gaaji
+    # 접근 포트 설정 (컨테이너 외부:컨테이너 내부)
+    ports:
+      - "27017:27017"
+    volumes:
+      # -v 옵션 (다렉토리 마운트 설정)
+      - ~/data/mongo/gaaji-market/chats:/data/db
+  zookeeper:
+    image: wurstmeister/zookeeper
+    container_name: zookeeper-gaaji
+    ports:
+      - "2181:2181"
+  kafka:
+    image: wurstmeister/kafka:2.12-2.5.0
+    container_name: kafka-gaaji
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: 127.0.0.1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+    volumes:
+      - ~/data/kafka/gaaji-market:/var/run/docker.sock
