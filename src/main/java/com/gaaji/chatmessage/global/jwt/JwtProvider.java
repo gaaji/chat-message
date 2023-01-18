@@ -1,7 +1,7 @@
 package com.gaaji.chatmessage.global.jwt;
 
 import com.gaaji.chatmessage.global.constants.StringConstants;
-import com.gaaji.chatmessage.global.exception.ErrorCodeConstants;
+import com.gaaji.chatmessage.global.exception.ExceptionHandlerConstants;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -61,30 +61,30 @@ public class JwtProvider {
             log.info("[JwtProvider] - Token Validated.");
 
         } catch (MalformedJwtException e ) {
-            throw new MessageDeliveryException(ErrorCodeConstants.JWT_MALFORMED);
+            throw new MessageDeliveryException(ExceptionHandlerConstants.JWT_MALFORMED);
 
         } catch (ExpiredJwtException e) {
-            throw new MessageDeliveryException(ErrorCodeConstants.JWT_EXPIRED);
+            throw new MessageDeliveryException(ExceptionHandlerConstants.JWT_EXPIRED);
         }
     }
 
     private String validateTokenIsNonNull(String token) {
         if(!StringUtils.hasText(token)) {
-            throw new MessageDeliveryException(ErrorCodeConstants.JWT_NULL);
+            throw new MessageDeliveryException(ExceptionHandlerConstants.JWT_NULL);
         }
         return token;
     }
 
     private String validateTokenHasPrefix(String token) {
         if (!token.contains(StringConstants.BEARER_PREFIX)) {
-            throw new MessageDeliveryException(ErrorCodeConstants.JWT_INVALIDATED_PREFIX);
+            throw new MessageDeliveryException(ExceptionHandlerConstants.JWT_INVALIDATED_PREFIX);
         }
         return token.substring(StringConstants.BEARER_PREFIX.length());
     }
 
     private void validateTokenInvalidated(Jws<Claims> claims) {
         if (claims.getBody() == null) {
-            throw new MessageDeliveryException(ErrorCodeConstants.JWT_INVALIDATED);
+            throw new MessageDeliveryException(ExceptionHandlerConstants.JWT_INVALIDATED);
         }
     }
 
