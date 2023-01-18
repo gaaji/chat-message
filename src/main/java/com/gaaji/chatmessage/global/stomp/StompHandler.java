@@ -1,6 +1,7 @@
 package com.gaaji.chatmessage.global.stomp;
 
-import com.gaaji.chatmessage.domain.service.KafkaService;
+import com.gaaji.chatmessage.domain.service.WebSocketConnectService;
+import com.gaaji.chatmessage.global.constants.StringConstants;
 import com.gaaji.chatmessage.global.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,17 +14,13 @@ import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class StompHandler implements ChannelInterceptor {
 
     private final JwtProvider jwtProvider;
-    private final KafkaService kafkaService;
-    private static Map<String, String> sessions = new HashMap<>();
+    private final WebSocketConnectService webSocketConnectService;
 
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
@@ -40,36 +37,33 @@ public class StompHandler implements ChannelInterceptor {
 
     @EventListener
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
-        log.info("[StompHandler] - WebSocket Disconnecting ...");
         String sessionId = event.getSessionId();
 
-        if( sessions.containsKey(sessionId) ) {
-            String userId = sessions.remove(sessionId);
-
-            disconnecting(userId);
-
-            log.info("[StompHandler] - WebSocket Disconnect");
-        }
+        disconnecting(sessionId);
     }
 
     private void connecting(StompHeaderAccessor accessor) {
         log.info("[StompHandler] - WebSocket Connecting ...");
 
-        String authorization = accessor.getFirstNativeHeader("WebSocketToken");
+        // Validate token
+        String authorization = accessor.getFirstNativeHeader(StringConstants.HEADER_SOCKET_TOKEN);
         jwtProvider.validateToken(authorization);
 
+        // Handling connect event
         String sessionId = accessor.getSessionId();
-        String userId = "qwer"; // TODO Get User Id in Header
+        String userId = accessor.getFirstNativeHeader(StringConstants.HEADER_AUTH_ID);
+        webSocketConnectService.connect(sessionId, userId);
 
-        sessions.put(sessionId, userId);
-
-        kafkaService.notifyOnline(userId);
-
-        log.info("[StompHandler] - WebSocket Connect");
+        log.info("[StompHandler] - WebSocket Connect.");
     }
 
-    private void disconnecting(String userId) {
-        kafkaService.notifyOffline(userId);
+    private void disconnecting(String sessionId) {
+        log.info("[StompHandler] - WebSocket Disconnecting ...");
+
+        // Handling disconnect event
+        webSocketConnectService.disconnect(sessionId);
+
+        log.info("[StompHandler] - WebSocket Disconnect.");
     }
 
 }
