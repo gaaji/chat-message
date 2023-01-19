@@ -1,6 +1,6 @@
 package com.gaaji.chatmessage.domain.repository;
 
-import com.gaaji.chatmessage.domain.controller.dto.ChatRequest;
+import com.gaaji.chatmessage.domain.controller.dto.ChatDto;
 import com.gaaji.chatmessage.domain.entity.Chat;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -20,7 +20,7 @@ class ChatRepositoryTest {
     private static final String roomId = UUID.randomUUID().toString();
 
     private Chat createChat() {
-        ChatRequest request = ChatRequest.builder().roomId(roomId).senderId(UUID.randomUUID().toString()).content("hello! new chat!!").build();
+        ChatDto request = ChatDto.builder().roomId(roomId).senderId(UUID.randomUUID().toString()).content("hello! new chat!!").build();
         return Chat.of(request);
     }
 

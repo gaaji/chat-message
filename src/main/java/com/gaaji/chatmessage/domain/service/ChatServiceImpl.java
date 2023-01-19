@@ -1,6 +1,6 @@
 package com.gaaji.chatmessage.domain.service;
 
-import com.gaaji.chatmessage.domain.controller.dto.ChatRequest;
+import com.gaaji.chatmessage.domain.controller.dto.ChatDto;
 import com.gaaji.chatmessage.domain.entity.Chat;
 import com.gaaji.chatmessage.domain.repository.ChatRepository;
 import com.gaaji.chatmessage.global.constants.ApiConstants;
@@ -17,7 +17,7 @@ public class ChatServiceImpl implements ChatService{
     private final KafkaService kafkaService;
 
     @Override
-    public void chat(ChatRequest chatRequest) {
+    public void chat(ChatDto chatRequest) {
         Chat chat = Chat.of(chatRequest);
 
         // 1. DB 저장
@@ -31,7 +31,7 @@ public class ChatServiceImpl implements ChatService{
 
     }
 
-    private void broadcasting(ChatRequest chat) {
+    private void broadcasting(ChatDto chat) {
         template.convertAndSend(ApiConstants.SUBSCRIBE_ENDPOINT + chat.getRoomId(), chat);
     }
 }

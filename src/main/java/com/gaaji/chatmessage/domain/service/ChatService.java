@@ -1,9 +1,9 @@
 package com.gaaji.chatmessage.domain.service;
 
-import com.gaaji.chatmessage.domain.controller.dto.ChatRequest;
+import com.gaaji.chatmessage.domain.controller.dto.ChatDto;
 
 public interface ChatService {
 
-    void chat(ChatRequest chat);
+    void chat(ChatDto chat);
 
 }

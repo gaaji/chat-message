@@ -2,7 +2,7 @@ package com.gaaji.chatmessage.domain.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gaaji.chatmessage.domain.controller.dto.ChatRequest;
+import com.gaaji.chatmessage.domain.controller.dto.ChatDto;
 import com.gaaji.chatmessage.domain.controller.dto.ConnectStatusRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +34,7 @@ public class KafkaServiceImpl implements KafkaService {
     }
 
     @Override
-    public void chat(ChatRequest chat) {
+    public void chat(ChatDto chat) {
         String message = convertValueAsString(chat);
         sendMessage("chat", message);
     }
