@@ -3,7 +3,8 @@ package com.gaaji.chatmessage.domain.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gaaji.chatmessage.domain.controller.dto.ChatDto;
-import com.gaaji.chatmessage.domain.controller.dto.ConnectStatusRequest;
+import com.gaaji.chatmessage.domain.controller.dto.ConnectUserDto;
+import com.gaaji.chatmessage.global.constants.StringConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -18,25 +19,27 @@ public class KafkaServiceImpl implements KafkaService {
 
     @Override
     public void notifyOnline(String userId) {
-        ConnectStatusRequest online = ConnectStatusRequest.newOnline(userId);
-        notifyStatus(online);
+        ConnectUserDto online = ConnectUserDto.from(userId);
+
+        String message = convertValueAsString(online);
+
+        sendMessage(StringConstants.KAFKA_TOPIC_CONNECTED, message);
     }
 
     @Override
     public void notifyOffline(String userId) {
-        ConnectStatusRequest offline = ConnectStatusRequest.newOffline(userId);
-        notifyStatus(offline);
-    }
+        ConnectUserDto offline = ConnectUserDto.from(userId);
 
-    private void notifyStatus(ConnectStatusRequest status) {
-        String message = convertValueAsString(status);
-        sendMessage("status", message);
+        String message = convertValueAsString(offline);
+
+        sendMessage(StringConstants.KAFKA_TOPIC_DISCONNECTED, message);
     }
 
     @Override
     public void chat(ChatDto chat) {
         String message = convertValueAsString(chat);
-        sendMessage("chat", message);
+
+        sendMessage(StringConstants.KAFKA_TOPIC_CHATTED, message);
     }
 
     private void sendMessage(String topic, String message) {
