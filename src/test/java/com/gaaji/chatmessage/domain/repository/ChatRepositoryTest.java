@@ -1,6 +1,6 @@
 package com.gaaji.chatmessage.domain.repository;
 
-import com.gaaji.chatmessage.domain.controller.dto.ChatRequest;
+import com.gaaji.chatmessage.domain.controller.dto.ChatDto;
 import com.gaaji.chatmessage.domain.entity.Chat;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

@@ -1,6 +1,6 @@
 package com.gaaji.chatmessage.domain.entity;
 
-import com.gaaji.chatmessage.domain.controller.dto.ChatRequest;
+import com.gaaji.chatmessage.domain.controller.dto.ChatDto;
 import lombok.Builder;
 import lombok.Data;
 import org.bson.types.ObjectId;

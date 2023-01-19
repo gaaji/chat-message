@@ -1,6 +1,6 @@
 package com.gaaji.chatmessage.domain.service;
 
-import com.gaaji.chatmessage.domain.controller.dto.ChatRequest;
+import com.gaaji.chatmessage.domain.controller.dto.ChatDto;
 import com.gaaji.chatmessage.domain.entity.Chat;
 import com.gaaji.chatmessage.domain.repository.ChatRepository;
 import com.gaaji.chatmessage.global.constants.ApiConstants;
