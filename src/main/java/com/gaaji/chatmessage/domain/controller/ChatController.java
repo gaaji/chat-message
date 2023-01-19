@@ -1,6 +1,6 @@
 package com.gaaji.chatmessage.domain.controller;
 
-import com.gaaji.chatmessage.domain.controller.dto.ChatRequest;
+import com.gaaji.chatmessage.domain.controller.dto.ChatDto;
 import com.gaaji.chatmessage.domain.service.ChatService;
 import com.gaaji.chatmessage.global.constants.ApiConstants;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ public class ChatController {
     private final ChatService chatService;
 
     @MessageMapping(ApiConstants.ENDPOINT_CHAT)
-    public void chat(@Payload ChatRequest chat) {
+    public void chat(@Payload ChatDto chat) {
         log.info("CHAT: {}", chat);
 
         chatService.chat(chat);

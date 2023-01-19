@@ -1,6 +1,6 @@
 package com.gaaji.chatmessage.domain.entity;
 
-import com.gaaji.chatmessage.domain.controller.dto.ChatRequest;
+import com.gaaji.chatmessage.domain.controller.dto.ChatDto;
 import lombok.Builder;
 import lombok.Data;
 import org.bson.types.ObjectId;
@@ -19,7 +19,7 @@ public class Chat {
     private String content;
     private Date createdAt;
 
-    public static Chat from(ChatRequest chatDto) {
+    public static Chat from(ChatDto chatDto) {
         return Chat.builder()
                 .id(ObjectId.get())
                 .roomId(chatDto.getRoomId())
