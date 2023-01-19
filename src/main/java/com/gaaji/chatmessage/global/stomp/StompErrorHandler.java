@@ -1,5 +1,6 @@
 package com.gaaji.chatmessage.global.stomp;
 
+import com.gaaji.chatmessage.global.exception.ChatMessageException;
 import com.gaaji.chatmessage.global.exception.ErrorCode;
 import com.gaaji.chatmessage.global.exception.ExceptionHandlerConstants;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,10 @@ public class StompErrorHandler extends StompSubProtocolErrorHandler {
     @Override
     public Message<byte[]> handleClientMessageProcessingError(Message<byte[]> clientMessage, Throwable ex) {
 
+        if ( ex instanceof ChatMessageException ) {
+            return handleCustomException(((ChatMessageException) ex).errorCode());
+        }
+
         if (ex instanceof MessageDeliveryException) {
 
             switch (Objects.requireNonNull(ex.getMessage())) {
@@ -52,6 +57,10 @@ public class StompErrorHandler extends StompSubProtocolErrorHandler {
 
     /** JWT 토큰 만료 예외 처리 */
     private Message<byte[]> handleTokenException(ErrorCode errorCode) {
+        return prepareErrorMessage(errorCode);
+    }
+
+    private Message<byte[]> handleCustomException(ErrorCode errorCode) {
         return prepareErrorMessage(errorCode);
     }
 

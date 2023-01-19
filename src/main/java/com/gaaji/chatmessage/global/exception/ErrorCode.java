@@ -6,6 +6,7 @@ public enum ErrorCode {
     MALFORMED_TOKEN_ERROR("C-103", "토큰의 형식이 유효하지 않습니다."),
     TOKEN_EXPIRATION_ERROR("C-104", "인증 토큰이 만료되었습니다."),
     INVALIDATED_TOKEN_PREFIX_ERROR("C-105", "토큰 타입이 유효하지 않습니다."),
+    JSON_PROCESSING_ERROR("C-106", "죄송합니다. 시스템에 오류가 발생하였습니다.")
     ;
     private String code;
     private String message;
