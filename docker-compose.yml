@@ -1,6 +1,5 @@
-# 파일 규격 버전
 version: "3"
-# 이 항목 밑에 실행하려는 컨테이너 들을 정의
+
 services:
   # 서비스 명
   mongodb:
@@ -31,3 +30,16 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
     volumes:
       - ~/data/kafka/gaaji-market:/var/run/docker.sock
+  redis:
+    image: redis
+    restart: always
+    container_name: redis-sm-gaaji
+    command: redis-server --port 6379
+    hostname: redis_standalone
+    labels:
+      - "name=redis"
+      - "mode=standalone"
+    ports:
+      - "6379:6379"
+    volumes:
+      - ~/data/redis/gaaji-market/chats:/data
