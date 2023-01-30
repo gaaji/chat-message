@@ -1,34 +1,43 @@
 package com.gaaji.chatmessage.domain.entity;
 
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Objects;
 
 @Data
-@Builder
 @Document(collection = "sessions")
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Session {
     private ObjectId id;
     private String sessionId;
     private String userId;
+    private String subscriptionId;
 
-    private Session() {}
-    private Session(ObjectId id, String sessionId, String userId) {
-        this.id = id;
-        this.sessionId = sessionId;
-        this.userId = userId;
+    public static Session create(String sessionId, String userId) {
+        return new Session(
+                ObjectId.get(),
+                sessionId,
+                userId,
+                null
+        );
     }
 
-    public static Session of(String sessionId, String userId) {
-        return Session.builder()
-                .id(ObjectId.get())
-                .sessionId(sessionId)
-                .userId(userId)
-                .build();
+    public Session subscribe(String subscriptionId) {
+        this.setSubscriptionId(subscriptionId);
+        return this;
+    }
+
+    public Session unsubscribe() {
+        this.setSubscriptionId(null);
+        return this;
+    }
+
+    public boolean isSubscribing() {
+        return !this.subscriptionId.isEmpty() || !this.subscriptionId.isBlank() || this.subscriptionId != null;
     }
 
     @Override
