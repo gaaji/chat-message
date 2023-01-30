@@ -3,7 +3,7 @@ package com.gaaji.chatmessage.domain.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gaaji.chatmessage.domain.controller.dto.ChatDto;
-import com.gaaji.chatmessage.domain.controller.dto.ConnectUserDto;
+import com.gaaji.chatmessage.domain.controller.dto.UserIdDto;
 import com.gaaji.chatmessage.global.constants.StringConstants;
 import com.gaaji.chatmessage.global.exception.ChatMessageException;
 import com.gaaji.chatmessage.global.exception.ErrorCode;
@@ -20,28 +20,28 @@ public class KafkaServiceImpl implements KafkaService {
     private final KafkaTemplate<String, String> kafkaTemplate;
 
     @Override
-    public void notifyOnline(String userId) {
-        ConnectUserDto online = ConnectUserDto.from(userId);
+    public void notifySubscribe(String userId) {
+        UserIdDto userIdDto = UserIdDto.of(userId);
 
-        String message = convertValueAsString(online);
+        String message = convertValueAsString(userIdDto);
 
-        sendMessage(StringConstants.KAFKA_TOPIC_CONNECTED, message);
+        sendMessage(StringConstants.TOPIC_MEMBER_SUBSCRIBED, message);
     }
 
     @Override
-    public void notifyOffline(String userId) {
-        ConnectUserDto offline = ConnectUserDto.from(userId);
+    public void notifyUnsubscribe(String userId) {
+        UserIdDto userIdDto = UserIdDto.of(userId);
 
-        String message = convertValueAsString(offline);
+        String message = convertValueAsString(userIdDto);
 
-        sendMessage(StringConstants.KAFKA_TOPIC_DISCONNECTED, message);
+        sendMessage(StringConstants.TOPIC_MEMBER_UNSUBSCRIBED, message);
     }
 
     @Override
     public void chat(ChatDto chat) {
         String message = convertValueAsString(chat);
 
-        sendMessage(StringConstants.KAFKA_TOPIC_CHATTED, message);
+        sendMessage(StringConstants.TOPIC_CHATTED, message);
     }
 
     private void sendMessage(String topic, String message) {

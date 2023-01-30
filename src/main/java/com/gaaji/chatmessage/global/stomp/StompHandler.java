@@ -28,18 +28,21 @@ public class StompHandler implements ChannelInterceptor {
 
         StompCommand command = accessor.getCommand();
 
-        if(command == StompCommand.CONNECT) {
-            connecting(accessor);
+        log.info("STOMP COMMAND : {}, Header : {}", command, accessor);
+
+        switch (command) {
+            case CONNECT :
+                connecting(accessor);
+                break;
+            case SUBSCRIBE:
+                subscribing(accessor);
+                break;
+            case UNSUBSCRIBE:
+                unsubscribing(accessor);
+                break;
         }
 
         return message;
-    }
-
-    @EventListener
-    public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
-        String sessionId = event.getSessionId();
-
-        disconnecting(sessionId);
     }
 
     private void connecting(StompHeaderAccessor accessor) {
@@ -55,6 +58,27 @@ public class StompHandler implements ChannelInterceptor {
         webSocketConnectService.connect(sessionId, userId);
 
         log.info("[StompHandler] - WebSocket Connect.");
+    }
+
+    private void subscribing(StompHeaderAccessor accessor) {
+        String sessionId = accessor.getSessionId();
+        String subscriptionId = accessor.getSubscriptionId();
+
+        webSocketConnectService.subscribe(sessionId, subscriptionId);
+    }
+
+    private void unsubscribing(StompHeaderAccessor accessor) {
+        String sessionId = accessor.getSessionId();
+        String subscriptionId = accessor.getSubscriptionId();
+
+        webSocketConnectService.unsubscribe(sessionId, subscriptionId);
+    }
+
+    @EventListener
+    public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
+        String sessionId = event.getSessionId();
+
+        disconnecting(sessionId);
     }
 
     private void disconnecting(String sessionId) {
