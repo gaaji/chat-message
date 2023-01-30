@@ -24,23 +24,39 @@ public class WebSocketConnectServiceImpl implements WebSocketConnectService {
 
     @Override
     public void connect(String sessionId, String userId) {
-        Session connectSession = Session.of(sessionId, userId);
+        Session connectSession = Session.create(sessionId, userId);
         sessionRepository.save(connectSession);
-
-        kafkaConnectThreadPool.submit(() ->
-                kafkaService.notifyOnline(connectSession.getUserId()));
     }
 
     @Override
     public void disconnect(String sessionId) {
         sessionRepository.findBySessionId(sessionId)
-                .ifPresent(
-                        session -> {
-                            sessionRepository.delete(session);
-
-                            kafkaConnectThreadPool.submit(() ->
-                                    kafkaService.notifyOffline(session.getUserId()));
-                        }
-                );
+                .ifPresent(session -> {
+                    if(session.isSubscribing()) {
+                        unsubscribe(session.getSessionId(), session.getSubscriptionId());
+                    }
+                    sessionRepository.delete(session);
+                });
     }
+
+    @Override
+    public void subscribe(String sessionId, String subscriptionId) {
+        Session session = sessionRepository.findBySessionId(sessionId).orElseThrow();
+        session.subscribe(subscriptionId);
+        sessionRepository.save(session);
+
+        String userId = session.getUserId();
+        kafkaConnectThreadPool.submit(() -> kafkaService.notifySubscribe(userId));
+    }
+
+    @Override
+    public void unsubscribe(String sessionId, String subscriptionId) {
+        Session session = sessionRepository.findBySessionIdAndSubscriptionId(sessionId, subscriptionId).orElseThrow();
+        session.unsubscribe();
+        sessionRepository.save(session);
+
+        String userId = session.getUserId();
+        kafkaConnectThreadPool.submit(() -> kafkaService.notifyUnsubscribe(userId));
+    }
+
 }
