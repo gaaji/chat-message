@@ -1,13 +1,15 @@
 package com.gaaji.chatmessage.domain.controller.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.gaaji.chatmessage.global.constants.StringConstants;
+import lombok.*;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor(staticName = "of")
+@RequiredArgsConstructor(staticName = "of")
 public class TokenDto {
-    private String tokenHeaderName;
-    private String token;
+    private final String tokenHeaderName = StringConstants.HEADER_SOCKET_TOKEN;
+    private final String token;
+
+//    public static TokenDto of(String token) {
+//        return new TokenDto(StringConstants.HEADER_SOCKET_TOKEN, token);
+//    }
 }

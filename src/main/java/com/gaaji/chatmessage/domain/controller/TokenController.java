@@ -3,7 +3,6 @@ package com.gaaji.chatmessage.domain.controller;
 import com.gaaji.chatmessage.domain.controller.dto.TokenDto;
 import com.gaaji.chatmessage.domain.service.TokenService;
 import com.gaaji.chatmessage.global.constants.ApiConstants;
-import com.gaaji.chatmessage.global.constants.StringConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +22,7 @@ public class TokenController {
     public TokenDto createToken() {
         String token = tokenService.createToken();
 
-        return TokenDto.of(StringConstants.HEADER_SOCKET_TOKEN, token);
+        return TokenDto.of(token);
     }
 
 }
