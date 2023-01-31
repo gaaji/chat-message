@@ -8,6 +8,7 @@ import com.gaaji.chatmessage.global.constants.ApiConstants;
 import com.gaaji.chatmessage.global.constants.IntegerConstants;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class ChatServiceImpl implements ChatService {
 
@@ -47,6 +49,7 @@ public class ChatServiceImpl implements ChatService {
 
     public List<Chat> receiveChatLog(Session session) {
         List<Chat> chats = chatRepository.findChatsByRoomId(session.getSubscriptionRoomId());
+        log.info("chats: {}", chats);
         template.convertAndSendToUser(session.getUserId(), session.getDestination(), chats);
         return chats;
     }
