@@ -7,6 +7,7 @@ import com.gaaji.chatmessage.global.constants.IntegerConstants;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -25,7 +26,8 @@ public class WebSocketConnectServiceImpl implements WebSocketConnectService {
 
     private final SessionRepository sessionRepository;
     private final KafkaService kafkaService;
-    private final ChatService chatService;
+//    private final ChatService chatService;
+    private final ApplicationEventPublisher eventPublisher;
 
     private final ExecutorService kafkaConnectThreadPool =
             Executors.newFixedThreadPool(IntegerConstants.RUNTIME_CORE_COUNT,
@@ -64,7 +66,8 @@ public class WebSocketConnectServiceImpl implements WebSocketConnectService {
         session.subscribe(subscriptionDto);
         sessionRepository.save(session);
 
-        chatService.receiveChatLog(session);
+//        chatService.receiveChatLog(session);
+        eventPublisher.publishEvent(session);
 
         String userId = session.getUserId();
         kafkaConnectThreadPool.submit(() -> kafkaService.notifySubscribe(userId));
