@@ -35,6 +35,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registry.enableSimpleBroker(ApiConstants.WEBSOCKET_SUBSCRIBE_ENDPOINT);
 
         registry.setApplicationDestinationPrefixes(ApiConstants.WEBSOCKET_PUBLISH_ENDPOINT);
+        registry.setUserDestinationPrefix("/user");
     }
 
     @Override

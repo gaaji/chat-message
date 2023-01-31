@@ -1,5 +1,6 @@
 package com.gaaji.chatmessage.global.stomp;
 
+import com.gaaji.chatmessage.domain.controller.dto.SubscriptionDto;
 import com.gaaji.chatmessage.domain.service.WebSocketConnectService;
 import com.gaaji.chatmessage.global.constants.StringConstants;
 import com.gaaji.chatmessage.global.jwt.JwtProvider;
@@ -9,8 +10,10 @@ import org.springframework.context.event.EventListener;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;
+import org.springframework.messaging.simp.stomp.StompConversionException;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
@@ -46,25 +49,36 @@ public class StompHandler implements ChannelInterceptor {
     }
 
     private void connecting(StompHeaderAccessor accessor) {
-        log.info("[StompHandler] - WebSocket Connecting ...");
+        try {
+            log.info("[StompHandler] - WebSocket Connecting ...");
 
-        // Validate token
-        String authorization = accessor.getFirstNativeHeader(StringConstants.HEADER_SOCKET_TOKEN);
-        jwtProvider.validateToken(authorization);
+            // Validate token
+            String authorization = accessor.getFirstNativeHeader(StringConstants.HEADER_SOCKET_TOKEN);
+            jwtProvider.validateToken(authorization);
 
-        // Handling connect event
-        String sessionId = accessor.getSessionId();
-        String userId = accessor.getFirstNativeHeader(StringConstants.HEADER_AUTH_ID);
-        webSocketConnectService.connect(sessionId, userId);
+            // Handling connect event
+            String sessionId = accessor.getSessionId();
+            String userId = accessor.getFirstNativeHeader(StringConstants.HEADER_AUTH_ID);
 
-        log.info("[StompHandler] - WebSocket Connect.");
+            Authentication auth = webSocketConnectService.connect(sessionId, userId);
+            accessor.setUser(auth);
+
+            log.info("STOMP Header : {}", accessor);
+
+            log.info("[StompHandler] - WebSocket Connect.");
+
+        } catch (StompConversionException e) {
+            log.error(e.getMessage());
+        }
     }
 
     private void subscribing(StompHeaderAccessor accessor) {
         String sessionId = accessor.getSessionId();
         String subscriptionId = accessor.getSubscriptionId();
+        String destination = accessor.getDestination();
+        SubscriptionDto subscriptionDto = SubscriptionDto.create(subscriptionId, destination);
 
-        webSocketConnectService.subscribe(sessionId, subscriptionId);
+        webSocketConnectService.subscribe(sessionId, subscriptionDto);
     }
 
     private void unsubscribing(StompHeaderAccessor accessor) {
