@@ -20,7 +20,7 @@ class ChatRepositoryTest {
     private static final String roomId = UUID.randomUUID().toString();
 
     private Chat createChat() {
-        ChatDto request = ChatDto.builder().roomId(roomId).senderId(UUID.randomUUID().toString()).content("hello! new chat!!").build();
+        ChatDto request = ChatDto.of(roomId, UUID.randomUUID().toString(), "hello! new chat!!");
         return Chat.from(request);
     }
 

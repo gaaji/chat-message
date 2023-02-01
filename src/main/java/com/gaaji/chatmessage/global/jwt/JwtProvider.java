@@ -23,7 +23,7 @@ import java.util.Date;
 public class JwtProvider {
     @Value("${jwt.secret.key}")
     private String secretKey;
-    private static final long EXPIRATION_SECOND = 300; // 5 min.
+    private static final long EXPIRATION_SECOND = 3000; // 5 min. 현재 테스트로 늘려놓음. 나중에 재설정 필요
 
     @PostConstruct
     protected void init() {

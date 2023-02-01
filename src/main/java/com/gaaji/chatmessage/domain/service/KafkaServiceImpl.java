@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gaaji.chatmessage.domain.controller.dto.ChatDto;
 import com.gaaji.chatmessage.domain.controller.dto.UserIdDto;
-import com.gaaji.chatmessage.global.constants.StringConstants;
+import com.gaaji.chatmessage.global.constants.KafkaConstants;
 import com.gaaji.chatmessage.global.exception.ChatMessageException;
 import com.gaaji.chatmessage.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ public class KafkaServiceImpl implements KafkaService {
 
         String message = convertValueAsString(userIdDto);
 
-        sendMessage(StringConstants.TOPIC_MEMBER_SUBSCRIBED, message);
+        sendMessage(KafkaConstants.TOPIC_MEMBER_SUBSCRIBED, message);
     }
 
     @Override
@@ -34,14 +34,14 @@ public class KafkaServiceImpl implements KafkaService {
 
         String message = convertValueAsString(userIdDto);
 
-        sendMessage(StringConstants.TOPIC_MEMBER_UNSUBSCRIBED, message);
+        sendMessage(KafkaConstants.TOPIC_MEMBER_UNSUBSCRIBED, message);
     }
 
     @Override
     public void chat(ChatDto chat) {
         String message = convertValueAsString(chat);
 
-        sendMessage(StringConstants.TOPIC_CHATTED, message);
+        sendMessage(KafkaConstants.TOPIC_CHATTED, message);
     }
 
     private void sendMessage(String topic, String message) {

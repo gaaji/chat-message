@@ -1,14 +1,20 @@
 package com.gaaji.chatmessage.domain.controller.dto;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import com.gaaji.chatmessage.domain.entity.Chat;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-@Getter
-@RequiredArgsConstructor(staticName = "of")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class ChatListDto {
-    private final String roomId;
-    private final String userId;
-    private final List<ChatDto> chatDtos;
+    private List<ChatDto> chatDtos;
+
+    public static ChatListDto of(List<Chat> chats) {
+        return new ChatListDto(chats.stream().map(ChatDto::of).collect(Collectors.toList()));
+    }
 }

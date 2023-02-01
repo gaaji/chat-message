@@ -13,7 +13,6 @@ import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompConversionException;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
@@ -30,8 +29,6 @@ public class StompHandler implements ChannelInterceptor {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
 
         StompCommand command = accessor.getCommand();
-
-        log.info("STOMP COMMAND : {}, Header : {}", command, accessor);
 
         switch (command) {
             case CONNECT :
@@ -60,10 +57,7 @@ public class StompHandler implements ChannelInterceptor {
             String sessionId = accessor.getSessionId();
             String userId = accessor.getFirstNativeHeader(StringConstants.HEADER_AUTH_ID);
 
-            Authentication auth = webSocketConnectService.connect(sessionId, userId);
-            accessor.setUser(auth);
-
-            log.info("STOMP Header : {}", accessor);
+            webSocketConnectService.connect(sessionId, userId);
 
             log.info("[StompHandler] - WebSocket Connect.");
 

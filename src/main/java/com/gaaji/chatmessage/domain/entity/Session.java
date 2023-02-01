@@ -21,38 +21,31 @@ public class Session {
     private String userId;
     private String subscriptionId;
     private String destination;
-    private String subscriptionRoomId;
 
     public static Session create(String sessionId, String userId) {
         return new Session(
                 ObjectId.get(),
                 sessionId,
                 userId,
-                null, null, null
+                null, null
         );
     }
 
-    public Session subscribe(SubscriptionDto subscriptionDto) {
-        this.setSubscriptionId(subscriptionDto.getSubscriptionId());
-        this.setSubscriptionRoomId(subscriptionDto.getSubscriptionRoomId());
-        this.setDestination(subscriptionDto.getDestination());
+    public Session subscribe(SubscriptionDto dto) {
+        this.subscriptionId = dto.getSubscriptionId();
+        this.destination = dto.getDestination();
         return this;
     }
 
     public Session unsubscribe() {
-        this.setSubscriptionId(null);
-        this.setSubscriptionRoomId(null);
-        this.setDestination(null);
+        this.subscriptionId = null;
+        this.destination = null;
         return this;
     }
 
     public boolean isSubscribing() {
         return !this.subscriptionId.isEmpty() || !this.subscriptionId.isBlank() || this.subscriptionId != null
                 || !this.destination.isEmpty() || !this.destination.isBlank() || this.destination != null;
-    }
-
-    public SubscriptionDto getSubscription() {
-        return SubscriptionDto.of(this.subscriptionId, this.destination, this.subscriptionRoomId);
     }
 
     @Override

@@ -7,15 +7,8 @@ import com.gaaji.chatmessage.global.constants.IntegerConstants;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -26,8 +19,6 @@ public class WebSocketConnectServiceImpl implements WebSocketConnectService {
 
     private final SessionRepository sessionRepository;
     private final KafkaService kafkaService;
-//    private final ChatService chatService;
-    private final ApplicationEventPublisher eventPublisher;
 
     private final ExecutorService kafkaConnectThreadPool =
             Executors.newFixedThreadPool(IntegerConstants.RUNTIME_CORE_COUNT,
@@ -35,16 +26,12 @@ public class WebSocketConnectServiceImpl implements WebSocketConnectService {
 
 
     @Override
-    public Authentication connect(String sessionId, String userId) {
+    public void connect(String sessionId, String userId) {
         if(sessionId.isBlank() || userId.isBlank()) {
             log.error("cannot connect - sessionId : {}, userId : {}", sessionId, userId);
         }
         Session connectSession = Session.create(sessionId, userId);
         sessionRepository.save(connectSession);
-
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-        return new UsernamePasswordAuthenticationToken(userId, sessionId, authorities);
     }
 
     @Override
@@ -58,16 +45,12 @@ public class WebSocketConnectServiceImpl implements WebSocketConnectService {
                 });
     }
 
-
     @Override
     public void subscribe(String sessionId, SubscriptionDto subscriptionDto) {
         Session session = sessionRepository.findBySessionId(sessionId).orElseThrow();
 
         session.subscribe(subscriptionDto);
         sessionRepository.save(session);
-
-//        chatService.receiveChatLog(session);
-        eventPublisher.publishEvent(session);
 
         String userId = session.getUserId();
         kafkaConnectThreadPool.submit(() -> kafkaService.notifySubscribe(userId));

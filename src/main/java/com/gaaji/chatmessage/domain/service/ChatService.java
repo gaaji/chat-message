@@ -1,15 +1,14 @@
 package com.gaaji.chatmessage.domain.service;
 
 import com.gaaji.chatmessage.domain.controller.dto.ChatDto;
-import com.gaaji.chatmessage.domain.entity.Chat;
-import com.gaaji.chatmessage.domain.entity.Session;
+import com.gaaji.chatmessage.domain.controller.dto.ChatListDto;
+import com.gaaji.chatmessage.domain.controller.dto.ChatListRequestDto;
 
-import java.util.List;
+import java.security.Principal;
 
 public interface ChatService {
 
     void chat(ChatDto chat);
 
-    List<Chat> receiveChatLog(Session roomId);
-
+    ChatListDto retrieveChatList(Principal principal, ChatListRequestDto chatListRequestDto);
 }
