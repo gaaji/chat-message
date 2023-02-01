@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.stereotype.Controller;
 
@@ -23,11 +24,14 @@ import java.security.Principal;
 @RequiredArgsConstructor
 public class ChatController {
 
+    private final SimpMessagingTemplate template;
     private final ChatService chatService;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @MessageMapping(StompConstants.ENDPOINT_APP_CHAT)
     public void chat(@Payload ChatDto chatDto) {
+        template.convertAndSend(StompConstants.ENDPOINT_TOPIC_CHAT_ROOM + chatDto.getRoomId(), chatDto);
+
         chatService.chat(chatDto);
     }
 
