@@ -17,8 +17,6 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.stereotype.Controller;
 
-import java.security.Principal;
-
 @Slf4j
 @Controller
 @RequiredArgsConstructor
@@ -37,9 +35,9 @@ public class ChatController {
 
     @MessageMapping(StompConstants.ENDPOINT_APP_CHAT_LIST)
     @SendToUser(StompConstants.ENDPOINT_QUEUE_CHAT_LIST)
-    public String retrieveChatList(Principal principal, @Payload ChatListRequestDto chatListRequestDto) {
+    public String retrieveChatList(@Payload ChatListRequestDto chatListRequestDto) {
         try {
-            ChatListDto chatListDto = chatService.retrieveChatList(principal, chatListRequestDto);
+            ChatListDto chatListDto = chatService.retrieveChatList(chatListRequestDto);
 
             return objectMapper.writeValueAsString(chatListDto);
 

@@ -2,18 +2,15 @@ package com.gaaji.chatmessage.domain.controller;
 
 import com.gaaji.chatmessage.domain.controller.dto.TokenDto;
 import com.gaaji.chatmessage.domain.service.TokenService;
-import com.gaaji.chatmessage.global.constants.StompConstants;
 import com.gaaji.chatmessage.global.constants.HttpConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(StompConstants.ENDPOINT_APP_CHAT)
 public class TokenController {
 
     private final TokenService tokenService;

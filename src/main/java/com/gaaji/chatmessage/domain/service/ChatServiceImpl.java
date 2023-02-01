@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.security.Principal;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -45,7 +44,7 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public ChatListDto retrieveChatList(Principal principal, ChatListRequestDto chatListRequestDto) {
+    public ChatListDto retrieveChatList(ChatListRequestDto chatListRequestDto) {
         List<Chat> chats = chatRepository.findChatsByRoomId(chatListRequestDto.getRoomId());
         return ChatListDto.of(chats);
     }
