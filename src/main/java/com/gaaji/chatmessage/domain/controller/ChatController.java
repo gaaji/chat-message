@@ -2,7 +2,7 @@ package com.gaaji.chatmessage.domain.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gaaji.chatmessage.domain.controller.dto.ChatDto;
+import com.gaaji.chatmessage.domain.controller.dto.ChatRequestDto;
 import com.gaaji.chatmessage.domain.controller.dto.ChatListDto;
 import com.gaaji.chatmessage.domain.controller.dto.ChatListRequestDto;
 import com.gaaji.chatmessage.domain.service.ChatService;
@@ -24,13 +24,13 @@ public class ChatController {
 
     private final SimpMessagingTemplate template;
     private final ChatService chatService;
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper;
 
     @MessageMapping(StompConstants.ENDPOINT_APP_CHAT)
-    public void chat(@Payload ChatDto chatDto) {
-        template.convertAndSend(StompConstants.ENDPOINT_TOPIC_CHAT_ROOM + chatDto.getRoomId(), chatDto);
+    public void chat(@Payload ChatRequestDto chatRequestDto) {
+        template.convertAndSend(StompConstants.ENDPOINT_TOPIC_CHAT_ROOM + chatRequestDto.getRoomId(), chatRequestDto);
 
-        chatService.chat(chatDto);
+        chatService.chat(chatRequestDto);
     }
 
     @MessageMapping(StompConstants.ENDPOINT_APP_CHAT_LIST)
@@ -38,6 +38,7 @@ public class ChatController {
     public String retrieveChatList(@Payload ChatListRequestDto chatListRequestDto) {
         try {
             ChatListDto chatListDto = chatService.retrieveChatList(chatListRequestDto);
+            log.info("Chat List Dto : {}", chatListDto);
 
             return objectMapper.writeValueAsString(chatListDto);
 

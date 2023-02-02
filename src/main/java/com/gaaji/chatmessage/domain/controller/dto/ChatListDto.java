@@ -12,9 +12,9 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ChatListDto {
-    private List<ChatDto> chatDtos;
+    private List<ChatResponseDto> chatResponseDtos;
 
     public static ChatListDto of(List<Chat> chats) {
-        return new ChatListDto(chats.stream().map(ChatDto::of).collect(Collectors.toList()));
+        return new ChatListDto(chats.stream().map(ChatResponseDto::of).collect(Collectors.toList()));
     }
 }

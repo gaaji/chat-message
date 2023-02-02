@@ -2,7 +2,7 @@ package com.gaaji.chatmessage.domain.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gaaji.chatmessage.domain.controller.dto.ChatDto;
+import com.gaaji.chatmessage.domain.controller.dto.ChatRequestDto;
 import com.gaaji.chatmessage.domain.controller.dto.UserIdDto;
 import com.gaaji.chatmessage.global.constants.KafkaConstants;
 import com.gaaji.chatmessage.global.exception.ChatMessageException;
@@ -18,6 +18,8 @@ import org.springframework.stereotype.Component;
 public class KafkaServiceImpl implements KafkaService {
 
     private final KafkaTemplate<String, String> kafkaTemplate;
+
+    private final ObjectMapper objectMapper;
 
     @Override
     public void notifySubscribe(String userId) {
@@ -38,7 +40,7 @@ public class KafkaServiceImpl implements KafkaService {
     }
 
     @Override
-    public void chat(ChatDto chat) {
+    public void chat(ChatRequestDto chat) {
         String message = convertValueAsString(chat);
 
         sendMessage(KafkaConstants.TOPIC_CHATTED, message);
@@ -51,7 +53,7 @@ public class KafkaServiceImpl implements KafkaService {
 
     private String convertValueAsString(Object value) {
         try {
-            String message = new ObjectMapper().writeValueAsString(value);
+            String message = objectMapper.writeValueAsString(value);
             return message;
         } catch (JsonProcessingException e) {
             throw new ChatMessageException(ErrorCode.JSON_PROCESSING_ERROR);

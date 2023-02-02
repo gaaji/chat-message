@@ -1,6 +1,6 @@
 package com.gaaji.chatmessage.domain.service;
 
-import com.gaaji.chatmessage.domain.controller.dto.ChatDto;
+import com.gaaji.chatmessage.domain.controller.dto.ChatRequestDto;
 import com.gaaji.chatmessage.domain.controller.dto.ChatListDto;
 import com.gaaji.chatmessage.domain.controller.dto.ChatListRequestDto;
 import com.gaaji.chatmessage.domain.entity.Chat;
@@ -32,13 +32,13 @@ public class ChatServiceImpl implements ChatService {
                     new ThreadFactoryBuilder().setNameFormat("Gaaji-Chat-Database-Connect-Thread-%d").build());
 
     @Override
-    public void chat(ChatDto chatDto) {
+    public void chat(ChatRequestDto chatRequestDto) {
         // Kafka 메시지 발행
-        kafkaConnectThreadPool.submit(() -> kafkaService.chat(chatDto));
+        kafkaConnectThreadPool.submit(() -> kafkaService.chat(chatRequestDto));
 
         // DB 저장
         databaseConnectThreadPool.submit(() -> {
-            Chat chat = Chat.from(chatDto);
+            Chat chat = Chat.from(chatRequestDto);
             chatRepository.save(chat);
         });
     }
