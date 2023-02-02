@@ -1,15 +1,15 @@
 # chat-message
 
 ## API
-| Protocol  |          Endpoint          |              Description               |
-|:---------:|:--------------------------:|:--------------------------------------:|
-|   Http    |        [GET] /token        |          WebSocket 토큰을 요청한다.           |
-| WebSocket |       /ws/gaaji-chat       |  Http 프로토콜에서 WebSocket으로 handshake한다.  |
-| WebSocket |         /app/chat          |               채팅을 요청한다.                |
-| WebSocket |       /app/chat/list       |            이전 채팅 리스트를 요청한다.            |
-| WebSocket | /topic/chat/room/{room_id} |   툭정 채팅방(room_id)을 구독하는 destination    |
-| WebSocket |   /user/queue/chat/list    |      이전 채팅 리스트를 응답하는 destinaiton       |
-| WebSocket |     /user/queue/error      | 채팅 메시지 서버의 Exception을 구독하는 destination |
+| Protocol  |  Type(Method)  |          Endpoint          |              Description               |
+|:---------:|:--------------:|:--------------------------:|:--------------------------------------:|
+|   Http    |      GET       |           /token           |          WebSocket 토큰을 요청한다.           |
+| WebSocket |    CONNECT     |       /ws/gaaji-chat       |  Http 프로토콜에서 WebSocket으로 handshake한다.  |
+| WebSocket | SEND (PUBLISH) |         /app/chat          |               채팅을 요청한다.                |
+| WebSocket | SEND (PUBLISH) |       /app/chat/list       |            이전 채팅 리스트를 요청한다.            |
+| WebSocket |   SUBSCRIBE    | /topic/chat/room/{room_id} |   툭정 채팅방(room_id)을 구독하는 destination    |
+| WebSocket |   SUBSCRIBE    |   /user/queue/chat/list    |      이전 채팅 리스트를 응답하는 destinaiton       |
+| WebSocket |   SUBSCRIBE    |     /user/queue/error      | 채팅 메시지 서버의 Exception을 구독하는 destination |
 
 ## Rule of commit
 ### 타입
