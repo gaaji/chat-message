@@ -5,8 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gaaji.chatmessage.domain.controller.dto.ChatRequestDto;
 import com.gaaji.chatmessage.domain.controller.dto.UserIdDto;
 import com.gaaji.chatmessage.global.constants.KafkaConstants;
-import com.gaaji.chatmessage.global.exception.ChatMessageException;
-import com.gaaji.chatmessage.global.exception.ErrorCode;
+import com.gaaji.chatmessage.global.error.exception.ChatMessageException;
+import com.gaaji.chatmessage.global.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -53,10 +53,11 @@ public class KafkaServiceImpl implements KafkaService {
 
     private String convertValueAsString(Object value) {
         try {
-            String message = objectMapper.writeValueAsString(value);
-            return message;
+            return objectMapper.writeValueAsString(value);
         } catch (JsonProcessingException e) {
-            throw new ChatMessageException(ErrorCode.JSON_PROCESSING_ERROR);
+            throw new ChatMessageException(this.getClass(), ErrorCode.JSON_PROCESSING_ERROR);
+        } catch (Exception e) {
+            throw new ChatMessageException(this.getClass(), ErrorCode.SYSTEM_ERROR);
         }
     }
 

@@ -2,13 +2,13 @@ package com.gaaji.chatmessage.domain.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gaaji.chatmessage.domain.controller.dto.ChatRequestDto;
 import com.gaaji.chatmessage.domain.controller.dto.ChatListDto;
 import com.gaaji.chatmessage.domain.controller.dto.ChatListRequestDto;
+import com.gaaji.chatmessage.domain.controller.dto.ChatRequestDto;
 import com.gaaji.chatmessage.domain.service.ChatService;
 import com.gaaji.chatmessage.global.constants.StompConstants;
-import com.gaaji.chatmessage.global.exception.ChatMessageException;
-import com.gaaji.chatmessage.global.exception.ErrorCode;
+import com.gaaji.chatmessage.global.error.exception.ChatMessageException;
+import com.gaaji.chatmessage.global.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -38,12 +38,16 @@ public class ChatController {
     public String retrieveChatList(@Payload ChatListRequestDto chatListRequestDto) {
         try {
             ChatListDto chatListDto = chatService.retrieveChatList(chatListRequestDto);
-            log.info("Chat List Dto : {}", chatListDto);
 
             return objectMapper.writeValueAsString(chatListDto);
 
+        } catch (ChatMessageException e) {
+            throw e;
         } catch (JsonProcessingException e) {
-            throw new ChatMessageException(ErrorCode.JSON_PROCESSING_ERROR);
+            throw new ChatMessageException(this.getClass(), ErrorCode.JSON_PROCESSING_ERROR);
+        } catch (Exception e) {
+            throw new ChatMessageException(this.getClass(), ErrorCode.SYSTEM_ERROR);
         }
     }
+
 }

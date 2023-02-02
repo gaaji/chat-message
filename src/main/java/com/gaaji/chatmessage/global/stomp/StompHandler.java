@@ -10,11 +10,12 @@ import org.springframework.context.event.EventListener;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;
-import org.springframework.messaging.simp.stomp.StompConversionException;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
+
+import java.util.Objects;
 
 @Slf4j
 @Component
@@ -30,7 +31,7 @@ public class StompHandler implements ChannelInterceptor {
 
         StompCommand command = accessor.getCommand();
 
-        switch (command) {
+        switch (Objects.requireNonNull(command)) {
             case CONNECT :
                 connecting(accessor);
                 break;
@@ -46,24 +47,19 @@ public class StompHandler implements ChannelInterceptor {
     }
 
     private void connecting(StompHeaderAccessor accessor) {
-        try {
-            log.info("[StompHandler] - WebSocket Connecting ...");
+        log.info("[StompHandler] - WebSocket Connecting ...");
 
-            // Validate token
-            String authorization = accessor.getFirstNativeHeader(StringConstants.HEADER_SOCKET_TOKEN);
-            jwtProvider.validateToken(authorization);
+        // Validate token
+        String authorization = accessor.getFirstNativeHeader(StringConstants.HEADER_SOCKET_TOKEN);
+        jwtProvider.validateToken(authorization);
 
-            // Handling connect event
-            String sessionId = accessor.getSessionId();
-            String userId = accessor.getFirstNativeHeader(StringConstants.HEADER_AUTH_ID);
+        // Handling connect event
+        String sessionId = accessor.getSessionId();
+        String userId = accessor.getFirstNativeHeader(StringConstants.HEADER_AUTH_ID);
 
-            webSocketConnectService.connect(sessionId, userId);
+        webSocketConnectService.connect(sessionId, userId);
 
-            log.info("[StompHandler] - WebSocket Connect.");
-
-        } catch (StompConversionException e) {
-            log.error(e.getMessage());
-        }
+        log.info("[StompHandler] - WebSocket Connect.");
     }
 
     private void subscribing(StompHeaderAccessor accessor) {

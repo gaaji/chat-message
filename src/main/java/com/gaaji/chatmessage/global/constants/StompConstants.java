@@ -13,6 +13,7 @@ public class StompConstants {
 
     public static final String SUBSCRIBE_PREFIX_QUEUE = "/queue";
         public static final String ENDPOINT_QUEUE_CHAT_LIST = SUBSCRIBE_PREFIX_QUEUE + "/chat/list";
+        public static final String ENDPOINT_QUEUE_ERROR = SUBSCRIBE_PREFIX_QUEUE + "/error";
 
     public static final String SUBSCRIBE_PREFIX_USER = "/user";
 

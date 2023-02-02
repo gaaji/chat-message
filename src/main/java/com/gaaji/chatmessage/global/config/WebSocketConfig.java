@@ -25,14 +25,11 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint(StompConstants.MAIN_ENDPOINT)
+        registry.setErrorHandler(stompErrorHandler)
+                .addEndpoint(StompConstants.MAIN_ENDPOINT)
                 .setHandshakeHandler(stompHandshakeHandler)
                 .setAllowedOriginPatterns("*");
-        // Heartbeat 고려
-        // withSockJS()는 JS 라이브러리인 SockJS를 사용한다는 함수로,
-        // WebSocket 요청을 SockJS로 강제한다.
 //                .withSockJS();
-        registry.setErrorHandler(stompErrorHandler);
     }
 
     @Override
