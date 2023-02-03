@@ -1,5 +1,6 @@
-package com.gaaji.chatmessage.global.stomp;
+package com.gaaji.chatmessage.global.config.websocket.stomp;
 
+import com.gaaji.chatmessage.domain.controller.dto.SubscriptionDto;
 import com.gaaji.chatmessage.domain.service.WebSocketConnectService;
 import com.gaaji.chatmessage.global.constants.StringConstants;
 import com.gaaji.chatmessage.global.jwt.JwtProvider;
@@ -14,10 +15,12 @@ import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
+import java.util.Objects;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class StompHandler implements ChannelInterceptor {
+public class StompInboundChannelInterceptor implements ChannelInterceptor {
 
     private final JwtProvider jwtProvider;
     private final WebSocketConnectService webSocketConnectService;
@@ -28,9 +31,7 @@ public class StompHandler implements ChannelInterceptor {
 
         StompCommand command = accessor.getCommand();
 
-        log.info("STOMP COMMAND : {}, Header : {}", command, accessor);
-
-        switch (command) {
+        switch (Objects.requireNonNull(command)) {
             case CONNECT :
                 connecting(accessor);
                 break;
@@ -55,6 +56,7 @@ public class StompHandler implements ChannelInterceptor {
         // Handling connect event
         String sessionId = accessor.getSessionId();
         String userId = accessor.getFirstNativeHeader(StringConstants.HEADER_AUTH_ID);
+
         webSocketConnectService.connect(sessionId, userId);
 
         log.info("[StompHandler] - WebSocket Connect.");
@@ -63,8 +65,10 @@ public class StompHandler implements ChannelInterceptor {
     private void subscribing(StompHeaderAccessor accessor) {
         String sessionId = accessor.getSessionId();
         String subscriptionId = accessor.getSubscriptionId();
+        String destination = accessor.getDestination();
+        SubscriptionDto subscriptionDto = SubscriptionDto.create(subscriptionId, destination);
 
-        webSocketConnectService.subscribe(sessionId, subscriptionId);
+        webSocketConnectService.subscribe(sessionId, subscriptionDto);
     }
 
     private void unsubscribing(StompHeaderAccessor accessor) {

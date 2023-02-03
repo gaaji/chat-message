@@ -1,7 +1,7 @@
 package com.gaaji.chatmessage.global.jwt;
 
 import com.gaaji.chatmessage.global.constants.StringConstants;
-import com.gaaji.chatmessage.global.exception.ExceptionHandlerConstants;
+import com.gaaji.chatmessage.global.error.ErrorCode;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +23,7 @@ import java.util.Date;
 public class JwtProvider {
     @Value("${jwt.secret.key}")
     private String secretKey;
-    private static final long EXPIRATION_SECOND = 300; // 5 min.
+    private static final long EXPIRATION_SECOND = 3000; // 5 min. 현재 테스트로 늘려놓음. 나중에 재설정 필요
 
     @PostConstruct
     protected void init() {
@@ -59,32 +59,34 @@ public class JwtProvider {
             validateTokenInvalidated(claims);
 
             log.info("[JwtProvider] - Token Validated.");
+        } catch (SignatureException e) {
+            throw new MessageDeliveryException(ErrorCode.INVALIDATED_TOKEN_ERROR.getCode());
 
         } catch (MalformedJwtException e ) {
-            throw new MessageDeliveryException(ExceptionHandlerConstants.JWT_MALFORMED);
+            throw new MessageDeliveryException(ErrorCode.MALFORMED_TOKEN_ERROR.getCode());
 
         } catch (ExpiredJwtException e) {
-            throw new MessageDeliveryException(ExceptionHandlerConstants.JWT_EXPIRED);
+            throw new MessageDeliveryException(ErrorCode.TOKEN_EXPIRATION_ERROR.getCode());
         }
     }
 
     private String validateTokenIsNonNull(String token) {
         if(!StringUtils.hasText(token)) {
-            throw new MessageDeliveryException(ExceptionHandlerConstants.JWT_NULL);
+            throw new MessageDeliveryException(ErrorCode.TOKEN_NULL_ERROR.getCode());
         }
         return token;
     }
 
     private String validateTokenHasPrefix(String token) {
         if (!token.contains(StringConstants.BEARER_PREFIX)) {
-            throw new MessageDeliveryException(ExceptionHandlerConstants.JWT_INVALIDATED_PREFIX);
+            throw new MessageDeliveryException(ErrorCode.INVALIDATED_TOKEN_PREFIX_ERROR.getCode());
         }
         return token.substring(StringConstants.BEARER_PREFIX.length());
     }
 
     private void validateTokenInvalidated(Jws<Claims> claims) {
         if (claims.getBody() == null) {
-            throw new MessageDeliveryException(ExceptionHandlerConstants.JWT_INVALIDATED);
+            throw new MessageDeliveryException(ErrorCode.INVALIDATED_TOKEN_ERROR.getCode());
         }
     }
 

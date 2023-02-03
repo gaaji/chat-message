@@ -1,4 +1,4 @@
-package com.gaaji.chatmessage.global.config;
+package com.gaaji.chatmessage.global.config.mongo.eventlistener;
 
 import com.gaaji.chatmessage.domain.entity.Chat;
 import org.springframework.data.mongodb.core.mapping.event.AbstractMongoEventListener;
@@ -9,7 +9,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 @Component
-public class MongoEventListener extends AbstractMongoEventListener<Chat> {
+public class ChatMongoEventListener extends AbstractMongoEventListener<Chat> {
 
     @Override
     public void onBeforeConvert(BeforeConvertEvent<Chat> event) {

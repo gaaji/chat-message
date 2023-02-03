@@ -1,8 +1,7 @@
-package com.gaaji.chatmessage.global.stomp;
+package com.gaaji.chatmessage.global.config.websocket.stomp;
 
-import com.gaaji.chatmessage.global.exception.ChatMessageException;
-import com.gaaji.chatmessage.global.exception.ErrorCode;
-import com.gaaji.chatmessage.global.exception.ExceptionHandlerConstants;
+import com.gaaji.chatmessage.global.error.exception.ChatMessageException;
+import com.gaaji.chatmessage.global.error.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageDeliveryException;
@@ -22,42 +21,26 @@ import java.util.Objects;
 @Component
 public class StompErrorHandler extends StompSubProtocolErrorHandler {
 
-    public StompErrorHandler() {
-        super();
-    }
-
     @Override
     public Message<byte[]> handleClientMessageProcessingError(Message<byte[]> clientMessage, Throwable ex) {
+        Throwable exception = ex;
 
-        if ( ex instanceof ChatMessageException ) {
-            return handleCustomException(((ChatMessageException) ex).errorCode());
-        }
+        if (exception instanceof MessageDeliveryException) {
 
-        if (ex instanceof MessageDeliveryException) {
-
-            switch (Objects.requireNonNull(ex.getMessage())) {
-                case ExceptionHandlerConstants.JWT_NULL:
-                    return handleTokenException(ErrorCode.TOKEN_NULL_ERROR);
-
-                case ExceptionHandlerConstants.JWT_INVALIDATED:
-                    return handleTokenException(ErrorCode.INVALIDATED_TOKEN_ERROR);
-
-                case ExceptionHandlerConstants.JWT_EXPIRED:
-                    return handleTokenException(ErrorCode.TOKEN_EXPIRATION_ERROR);
-
-                case ExceptionHandlerConstants.JWT_MALFORMED:
-                    return handleTokenException(ErrorCode.MALFORMED_TOKEN_ERROR);
-
-                case ExceptionHandlerConstants.JWT_INVALIDATED_PREFIX:
-                    return handleTokenException(ErrorCode.INVALIDATED_TOKEN_PREFIX_ERROR);
+            if (exception.getCause() instanceof ChatMessageException) {
+                ChatMessageException e = (ChatMessageException) exception.getCause();
+                return handleCustomException(e.errorCode());
             }
+
+            Objects.requireNonNull(exception.getMessage());
+            ErrorCode errorCode = ErrorCode.getErrorCode(exception.getMessage());
+            return handleCustomException(errorCode);
         }
-        return super.handleClientMessageProcessingError(clientMessage, ex);
+        return handleUnknownException();
     }
 
-    /** JWT 토큰 만료 예외 처리 */
-    private Message<byte[]> handleTokenException(ErrorCode errorCode) {
-        return prepareErrorMessage(errorCode);
+    private Message<byte[]> handleUnknownException() {
+        return prepareErrorMessage(ErrorCode.SYSTEM_ERROR);
     }
 
     private Message<byte[]> handleCustomException(ErrorCode errorCode) {

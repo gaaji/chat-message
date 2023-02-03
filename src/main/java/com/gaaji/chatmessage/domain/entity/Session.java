@@ -1,14 +1,17 @@
 package com.gaaji.chatmessage.domain.entity;
 
 
+import com.gaaji.chatmessage.domain.controller.dto.SubscriptionDto;
 import lombok.*;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Date;
 import java.util.Objects;
 
 @Data
 @Document(collection = "sessions")
+@Builder(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Session {
@@ -16,28 +19,34 @@ public class Session {
     private String sessionId;
     private String userId;
     private String subscriptionId;
+    private String destination;
+    private Date connectedAt;
 
     public static Session create(String sessionId, String userId) {
-        return new Session(
-                ObjectId.get(),
-                sessionId,
-                userId,
-                null
-        );
+        return Session.builder()
+                .id(ObjectId.get())
+                .sessionId(sessionId)
+                .userId(userId)
+                .subscriptionId(null)
+                .destination(null)
+                .build();
     }
 
-    public Session subscribe(String subscriptionId) {
-        this.setSubscriptionId(subscriptionId);
+    public Session subscribe(SubscriptionDto dto) {
+        this.subscriptionId = dto.getSubscriptionId();
+        this.destination = dto.getDestination();
         return this;
     }
 
     public Session unsubscribe() {
-        this.setSubscriptionId(null);
+        this.subscriptionId = null;
+        this.destination = null;
         return this;
     }
 
     public boolean isSubscribing() {
-        return !this.subscriptionId.isEmpty() || !this.subscriptionId.isBlank() || this.subscriptionId != null;
+        return !this.subscriptionId.isEmpty() || !this.subscriptionId.isBlank() || this.subscriptionId != null
+                || !this.destination.isEmpty() || !this.destination.isBlank() || this.destination != null;
     }
 
     @Override
