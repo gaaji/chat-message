@@ -2,17 +2,16 @@ package com.gaaji.chatmessage.domain.entity;
 
 
 import com.gaaji.chatmessage.domain.controller.dto.SubscriptionDto;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Date;
 import java.util.Objects;
 
 @Data
 @Document(collection = "sessions")
+@Builder(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Session {
@@ -21,14 +20,16 @@ public class Session {
     private String userId;
     private String subscriptionId;
     private String destination;
+    private Date connectedAt;
 
     public static Session create(String sessionId, String userId) {
-        return new Session(
-                ObjectId.get(),
-                sessionId,
-                userId,
-                null, null
-        );
+        return Session.builder()
+                .id(ObjectId.get())
+                .sessionId(sessionId)
+                .userId(userId)
+                .subscriptionId(null)
+                .destination(null)
+                .build();
     }
 
     public Session subscribe(SubscriptionDto dto) {
