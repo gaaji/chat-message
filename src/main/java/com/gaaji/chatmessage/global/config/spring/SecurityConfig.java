@@ -1,4 +1,4 @@
-package com.gaaji.chatmessage.global.config;
+package com.gaaji.chatmessage.global.config.spring;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

@@ -1,4 +1,4 @@
-package com.gaaji.chatmessage.global.config;
+package com.gaaji.chatmessage.global.config.mongo;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

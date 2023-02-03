@@ -1,4 +1,4 @@
-package com.gaaji.chatmessage.global.stomp;
+package com.gaaji.chatmessage.global.config.websocket.stomp;
 
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.stereotype.Component;

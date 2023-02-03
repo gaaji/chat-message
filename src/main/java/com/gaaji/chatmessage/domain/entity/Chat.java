@@ -1,8 +1,7 @@
 package com.gaaji.chatmessage.domain.entity;
 
 import com.gaaji.chatmessage.domain.controller.dto.ChatRequestDto;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -10,8 +9,10 @@ import java.util.Date;
 import java.util.Objects;
 
 @Data
-@Builder
 @Document(collection = "chats")
+@Builder(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Chat {
     private ObjectId id;
     private String roomId;

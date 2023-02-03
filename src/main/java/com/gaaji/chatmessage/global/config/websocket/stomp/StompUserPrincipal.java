@@ -1,4 +1,4 @@
-package com.gaaji.chatmessage.global.stomp;
+package com.gaaji.chatmessage.global.config.websocket.stomp;
 
 import java.security.Principal;
 import java.util.UUID;

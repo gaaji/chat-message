@@ -1,4 +1,4 @@
-package com.gaaji.chatmessage.global.stomp;
+package com.gaaji.chatmessage.global.config.websocket.stomp;
 
 import com.gaaji.chatmessage.global.error.exception.ChatMessageException;
 import com.gaaji.chatmessage.global.error.ErrorCode;

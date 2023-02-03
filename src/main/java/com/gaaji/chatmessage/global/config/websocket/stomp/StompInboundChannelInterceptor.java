@@ -1,4 +1,4 @@
-package com.gaaji.chatmessage.global.stomp;
+package com.gaaji.chatmessage.global.config.websocket.stomp;
 
 import com.gaaji.chatmessage.domain.controller.dto.SubscriptionDto;
 import com.gaaji.chatmessage.domain.service.WebSocketConnectService;
@@ -20,7 +20,7 @@ import java.util.Objects;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class StompHandler implements ChannelInterceptor {
+public class StompInboundChannelInterceptor implements ChannelInterceptor {
 
     private final JwtProvider jwtProvider;
     private final WebSocketConnectService webSocketConnectService;

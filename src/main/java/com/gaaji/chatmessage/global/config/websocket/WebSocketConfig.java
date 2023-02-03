@@ -1,9 +1,9 @@
-package com.gaaji.chatmessage.global.config;
+package com.gaaji.chatmessage.global.config.websocket;
 
 import com.gaaji.chatmessage.global.constants.StompConstants;
-import com.gaaji.chatmessage.global.stomp.StompErrorHandler;
-import com.gaaji.chatmessage.global.stomp.StompHandler;
-import com.gaaji.chatmessage.global.stomp.StompHandshakeHandler;
+import com.gaaji.chatmessage.global.config.websocket.stomp.StompErrorHandler;
+import com.gaaji.chatmessage.global.config.websocket.stomp.StompInboundChannelInterceptor;
+import com.gaaji.chatmessage.global.config.websocket.stomp.StompHandshakeHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
@@ -19,9 +19,9 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @Slf4j
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-    private final StompHandler stompHandler;
-    private final StompErrorHandler stompErrorHandler;
+    private final StompInboundChannelInterceptor stompInboundChannelInterceptor;
     private final StompHandshakeHandler stompHandshakeHandler;
+    private final StompErrorHandler stompErrorHandler;
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
@@ -43,7 +43,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
-        registration.interceptors(stompHandler);
+        registration.interceptors(stompInboundChannelInterceptor);
     }
 
 }

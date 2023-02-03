@@ -1,4 +1,4 @@
-package com.gaaji.chatmessage.global.config;
+package com.gaaji.chatmessage.global.config.spring;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
