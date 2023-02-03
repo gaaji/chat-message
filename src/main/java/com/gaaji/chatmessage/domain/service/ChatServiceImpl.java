@@ -58,12 +58,11 @@ public class ChatServiceImpl implements ChatService {
 
         List<Chat> chats;
         if(Objects.equals(lastMessageId, requiredFirstRetrieveMessageId)) {
-            chats = chatRepository.findThreeChatsByRoomId(roomId, pageRequest);
+            chats = chatRepository.findTenChatsByRoomId(roomId, pageRequest);
         } else {
             try {
                 ObjectId objectId = new ObjectId(lastMessageId);
-                chats = chatRepository.findThreeChatsByRoomIdAndIdLessThan(roomId, objectId, pageRequest);
-
+                chats = chatRepository.findTenChatsByRoomIdAndIdLessThan(roomId, objectId, pageRequest);
             } catch (IllegalArgumentException e) {
                 throw new ChatMessageException(this.getClass(), ErrorCode.BAD_REQUEST_ERROR);
             } catch (Exception e) {

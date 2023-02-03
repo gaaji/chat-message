@@ -13,10 +13,10 @@ public interface ChatRepository extends MongoRepository<Chat, String> {
     List<Chat> findChatsByRoomId(String roomId);
 
     @Query(sort = "{'_id' : -1 }")
-    List<Chat> findThreeChatsByRoomId(String roomId, Pageable pageable);
+    List<Chat> findTenChatsByRoomId(String roomId, Pageable pageable);
 
     @Query(sort = "{'_id' : -1}")
-    List<Chat> findThreeChatsByRoomIdAndIdLessThan(String roomId, ObjectId id, Pageable pageable);
+    List<Chat> findTenChatsByRoomIdAndIdLessThan(String roomId, ObjectId id, Pageable pageable);
 
 
 }
